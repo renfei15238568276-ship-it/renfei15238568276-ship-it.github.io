@@ -96,7 +96,7 @@
         <img src="https://raw.githubusercontent.com/renfei15238568276-ship-it/pdf2img-images/main/wechat.jpg" class="qr-img" alt="微信支付">
         <p style="font-size:12px;color:#666;margin:8px 0;">长按二维码付款 ¥9.9</p>
         
-        <button class="vip-btn vip-btn-pay" onclick="showStep2()">💳 我已付款</button>
+        
         <button class="vip-btn vip-close" onclick="closeVip()">取消</button>
       </div>
       
@@ -143,7 +143,7 @@
         alert('您已经是VIP会员了');
         return;
       }
-      showStep1();
+      showStep2();
       document.getElementById('vipModal').classList.add('show'); 
     }
     function closeVip() { 
