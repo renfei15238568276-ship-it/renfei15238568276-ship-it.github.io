@@ -18,7 +18,7 @@
     .setting-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
     .setting-row:last-child { margin-bottom: 0; }
     .setting-label { color: #475569; font-size: 14px; }
-    select, input[type="text"] { padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; }
+    select, input[type="text"] { padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; width: 100%; }
     .upload-area { border: 3px dashed #667eea; border-radius: 12px; padding: 50px 20px; text-align: center; cursor: pointer; transition: all 0.3s; background: #f8fafc; }
     .upload-area:hover { border-color: #764ba2; background: #f0f4ff; transform: scale(1.02); }
     .upload-icon { font-size: 60px; margin-bottom: 12px; }
@@ -37,10 +37,11 @@
     .qr-title { font-size: 14px; color: #333; margin-bottom: 8px; font-weight: bold; }
     .qr-img { width: 160px; height: 160px; border-radius: 10px; }
     .vip-btn { display: block; width: 100%; padding: 12px; background: #07c160; color: white; border: none; border-radius: 10px; font-size: 14px; cursor: pointer; margin-top: 15px; font-weight: bold; }
-    .vip-close { background: #95a5a6; }
+    .vip-close { background: #95a5a6; margin-top: 10px; }
     .history-btn { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: #667eea; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; box-shadow: 0 4px 15px rgba(102,126,234,0.4); cursor: pointer; }
-    .success-msg { display: none; color: #07c160; font-weight: bold; margin-bottom: 15px; }
-    .success-msg.show { display: block; }
+    .input-section { margin: 15px 0; text-align: left; }
+    .input-section label { display: block; font-size: 12px; color: #666; margin-bottom: 5px; }
+    .input-section input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
   </style>
 </head>
 <body>
@@ -93,8 +94,6 @@
       <p style="font-size:13px;color:#666;">✅ 批量下载打包<br>✅ 高清画质<br>✅ 无广告</p>
       <div class="vip-price">¥9.9/月</div>
       
-      <div class="success-msg" id="successMsg">✅ 支付成功！VIP已开通！</div>
-      
       <div class="qr-section">
         <div class="qr-title">📱 微信支付</div>
         <img src="https://raw.githubusercontent.com/renfei15238568276-ship-it/pdf2img-images/main/wechat.jpg" class="qr-img" alt="微信支付码">
@@ -105,8 +104,23 @@
         <img src="https://raw.githubusercontent.com/renfei15238568276-ship-it/pdf2img-images/main/alipay.jpg" class="qr-img" alt="支付宝支付码">
       </div>
       
-      <button class="vip-btn" onclick="activateVip()">✅ 我已付款，立即开通VIP</button>
+      <div class="input-section">
+        <label>付款后请填写付款账号（微信号/支付宝账号）</label>
+        <input type="text" id="payAccount" placeholder="例如: zhangsan 或 13800138000">
+      </div>
+      
+      <button class="vip-btn" onclick="submitPayment()">✅ 我已付款，提交开通</button>
       <button class="vip-btn vip-close" onclick="closeVip()">关闭</button>
+    </div>
+  </div>
+  
+  <!-- 提交成功弹窗 -->
+  <div class="vip-modal" id="successModal">
+    <div class="vip-content">
+      <div style="font-size:48px;">✅</div>
+      <h3 style="margin:15px 0;">提交成功！</h3>
+      <p style="font-size:14px;color:#666;">请等待客服确认开通<br>确认后会通知您</p>
+      <button class="vip-btn" onclick="closeSuccess()">知道了</button>
     </div>
   </div>
   
@@ -126,7 +140,6 @@
     let convertedImages = [];
     let isVip = localStorage.getItem('isVip') === 'true';
     
-    // 显示VIP状态
     if (isVip) {
       document.getElementById('vipBadge').classList.add('show');
       document.getElementById('vipBanner').innerHTML = '👑 VIP会员专享';
@@ -138,16 +151,26 @@
       if (isVip) return;
       document.getElementById('vipModal').classList.add('show'); 
     }
-    function closeVip() { document.getElementById('vipModal').classList.remove('show'); }
-    function activateVip() {
-      isVip = true;
-      localStorage.setItem('isVip', 'true');
-      document.getElementById('successMsg').classList.add('show');
-      document.getElementById('vipBadge').classList.add('show');
-      document.getElementById('vipBanner').innerHTML = '👑 VIP会员专享';
-      document.getElementById('vipBanner').style.background = '#07c160';
-      document.getElementById('vipBanner').style.color = '#fff';
-      setTimeout(() => closeVip(), 1500);
+    function closeVip() { 
+      document.getElementById('vipModal').classList.remove('show'); 
+      document.getElementById('payAccount').value = '';
+    }
+    function submitPayment() {
+      const account = document.getElementById('payAccount').value.trim();
+      if (!account) {
+        alert('请填写付款账号');
+        return;
+      }
+      // 保存付款申请到本地
+      const payments = JSON.parse(localStorage.getItem('vipPayments') || '[]');
+      payments.push({ account: account, date: new Date().toLocaleString() });
+      localStorage.setItem('vipPayments', JSON.stringify(payments));
+      
+      closeVip();
+      document.getElementById('successModal').style.display = 'flex';
+    }
+    function closeSuccess() {
+      document.getElementById('successModal').style.display = 'none';
     }
     function showHistory() {
       const history = JSON.parse(localStorage.getItem('pdfHistory') || '[]');
