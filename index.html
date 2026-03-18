@@ -142,7 +142,7 @@
     }
     function redeemCode() {
       const code = document.getElementById('vipCode').value.trim().toUpperCase();
-      if (code.startsWith('VIP') && code.length >= 10) {
+      if (code.toLowerCase() === 'vip125521') {
         isVip = true;
         localStorage.setItem('isVip', 'true');
         
