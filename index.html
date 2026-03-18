@@ -150,7 +150,7 @@
     }
     function contactAdmin() {
       const msg = '我已经付款，请给我兑换码';
-      window.location.href = 'https://weixin.qq.com?text=' + encodeURIComponent(msg);
+      window.location.href = 'javascript:void(0)?text=' + encodeURIComponent(msg);
     }
     function redeemCode() {
       const code = document.getElementById('vipCode').value.trim().toUpperCase();
