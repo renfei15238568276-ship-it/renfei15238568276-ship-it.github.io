@@ -11,6 +11,8 @@
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
     .container { max-width: 500px; margin: 0 auto; background: white; border-radius: 20px; padding: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
     h1 { color: #1e293b; margin-bottom: 20px; font-size: 24px; text-align: center; }
+    .vip-badge { display: none; background: linear-gradient(90deg, #ffd700, #ffaa00); color: #000; padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; margin-bottom: 15px; text-align: center; }
+    .vip-badge.show { display: block; }
     .vip-banner { background: linear-gradient(90deg, #ffd700, #ffaa00); color: #000; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 20px; cursor: pointer; }
     .settings { background: #f8fafc; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
     .setting-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
@@ -34,20 +36,20 @@
     .qr-section { margin: 15px 0; }
     .qr-title { font-size: 14px; color: #333; margin-bottom: 8px; font-weight: bold; }
     .qr-img { width: 160px; height: 160px; border-radius: 10px; }
-    .vip-btn { display: block; width: 100%; padding: 12px; background: #e74c3c; color: white; border: none; border-radius: 10px; font-size: 14px; cursor: pointer; margin-top: 15px; }
-    .vip-close { background: #95a5a6; margin-top: 10px; }
+    .vip-btn { display: block; width: 100%; padding: 12px; background: #07c160; color: white; border: none; border-radius: 10px; font-size: 14px; cursor: pointer; margin-top: 15px; font-weight: bold; }
+    .vip-close { background: #95a5a6; }
     .history-btn { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: #667eea; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; box-shadow: 0 4px 15px rgba(102,126,234,0.4); cursor: pointer; }
-    .history-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; }
-    .history-modal.show { display: block; }
-    .history-content { background: white; padding: 20px; max-height: 80vh; overflow-y: auto; border-radius: 20px; margin: 20px; }
-    .history-item { padding: 10px; border-bottom: 1px solid #eee; font-size: 12px; }
+    .success-msg { display: none; color: #07c160; font-weight: bold; margin-bottom: 15px; }
+    .success-msg.show { display: block; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>📄 PDF 转图片 VIP</h1>
+    <h1>📄 PDF 转图片</h1>
     
-    <div class="vip-banner" onclick="showVip()">
+    <div class="vip-badge" id="vipBadge">👑 VIP会员 已开通</div>
+    
+    <div class="vip-banner" id="vipBanner" onclick="showVip()">
       🌟 点击开通 VIP - ¥9.9/月
     </div>
     
@@ -91,6 +93,8 @@
       <p style="font-size:13px;color:#666;">✅ 批量下载打包<br>✅ 高清画质<br>✅ 无广告</p>
       <div class="vip-price">¥9.9/月</div>
       
+      <div class="success-msg" id="successMsg">✅ 支付成功！VIP已开通！</div>
+      
       <div class="qr-section">
         <div class="qr-title">📱 微信支付</div>
         <img src="https://raw.githubusercontent.com/renfei15238568276-ship-it/pdf2img-images/main/wechat.jpg" class="qr-img" alt="微信支付码">
@@ -101,15 +105,14 @@
         <img src="https://raw.githubusercontent.com/renfei15238568276-ship-it/pdf2img-images/main/alipay.jpg" class="qr-img" alt="支付宝支付码">
       </div>
       
-      <p style="font-size:12px;color:#999;margin:10px 0;">付款后截图发给客服开通</p>
-      <button class="vip-btn" onclick="alert('请添加客服微信: renfei888')">💬 联系客服</button>
+      <button class="vip-btn" onclick="activateVip()">✅ 我已付款，立即开通VIP</button>
       <button class="vip-btn vip-close" onclick="closeVip()">关闭</button>
     </div>
   </div>
   
   <!-- 历史记录弹窗 -->
-  <div class="history-modal" id="historyModal" onclick="closeHistory()">
-    <div class="history-content" onclick="event.stopPropagation()">
+  <div class="history-modal" id="historyModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:999;">
+    <div style="background:white;padding:20px;max-height:80vh;overflow-y:auto;border-radius:20px;margin:20px;">
       <h3>📜 转换历史</h3>
       <div id="historyList"></div>
       <button onclick="closeHistory()" style="margin-top:15px;padding:10px;width:100%;background:#667eea;color:white;border:none;border-radius:8px;">关闭</button>
@@ -121,18 +124,39 @@
     
     let currentFileName = '';
     let convertedImages = [];
-    let isVip = false;
+    let isVip = localStorage.getItem('isVip') === 'true';
     
-    function showVip() { document.getElementById('vipModal').classList.add('show'); }
+    // 显示VIP状态
+    if (isVip) {
+      document.getElementById('vipBadge').classList.add('show');
+      document.getElementById('vipBanner').innerHTML = '👑 VIP会员专享';
+      document.getElementById('vipBanner').style.background = '#07c160';
+      document.getElementById('vipBanner').style.color = '#fff';
+    }
+    
+    function showVip() { 
+      if (isVip) return;
+      document.getElementById('vipModal').classList.add('show'); 
+    }
     function closeVip() { document.getElementById('vipModal').classList.remove('show'); }
+    function activateVip() {
+      isVip = true;
+      localStorage.setItem('isVip', 'true');
+      document.getElementById('successMsg').classList.add('show');
+      document.getElementById('vipBadge').classList.add('show');
+      document.getElementById('vipBanner').innerHTML = '👑 VIP会员专享';
+      document.getElementById('vipBanner').style.background = '#07c160';
+      document.getElementById('vipBanner').style.color = '#fff';
+      setTimeout(() => closeVip(), 1500);
+    }
     function showHistory() {
       const history = JSON.parse(localStorage.getItem('pdfHistory') || '[]');
       document.getElementById('historyList').innerHTML = history.length ? 
-        history.map(h => `<div class="history-item">${h.name} - ${h.pages}页<br>${h.date}</div>`).join('') : 
+        history.map(h => `<div style="padding:10px;border-bottom:1px solid #eee;font-size:12px;">${h.name} - ${h.pages}页<br>${h.date}</div>`).join('') : 
         '<p style="color:#999;">暂无记录</p>';
-      document.getElementById('historyModal').classList.add('show');
+      document.getElementById('historyModal').style.display = 'block';
     }
-    function closeHistory() { document.getElementById('historyModal').classList.remove('show'); }
+    function closeHistory() { document.getElementById('historyModal').style.display = 'none'; }
     
     async function handleFile(file) {
       if (!file) return;
@@ -188,16 +212,16 @@
       convertedImages.forEach((img, idx) => {
         html += `<div class="preview-item"><img src="${img.data}"></div>`;
       });
-      html += '<button class="download-all" onclick="downloadAll()">📦 批量下载 (VIP专享)</button>';
+      
+      if (isVip) {
+        html += '<button class="download-all" onclick="downloadAll()">📦 批量下载</button>';
+      } else {
+        html += '<button class="download-all" onclick="showVip()">📦 批量下载 (开通VIP)</button>';
+      }
       preview.innerHTML = html;
     }
     
     async function downloadAll() {
-      if (!isVip) {
-        showVip();
-        return;
-      }
-      
       const format = document.getElementById('format').value;
       const zip = new JSZip();
       
