@@ -23,26 +23,24 @@
     .upload-text { color: #64748b; font-size: 16px; }
     #fileInput { display: none; }
     #preview { margin-top: 20px; }
-    .preview-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
     .preview-item { background: #f8fafc; padding: 15px; border-radius: 10px; margin-bottom: 12px; }
     .preview-item img { max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
     .download-all { display: block; width: 100%; padding: 14px; background: linear-gradient(90deg, #667eea, #764ba2); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; }
-    .download-all:disabled { background: #ccc; cursor: not-allowed; }
     .vip-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; }
     .vip-modal.show { display: flex; justify-content: center; align-items: center; }
-    .vip-content { background: white; padding: 30px; border-radius: 20px; text-align: center; max-width: 320px; }
+    .vip-content { background: white; padding: 20px; border-radius: 20px; text-align: center; max-width: 320px; }
     .vip-title { font-size: 24px; font-weight: bold; color: #ffd700; margin-bottom: 15px; }
-    .vip-price { font-size: 36px; color: #e74c3c; margin-bottom: 20px; }
-    .qr-section { margin: 20px 0; }
-    .qr-title { font-size: 16px; color: #333; margin-bottom: 10px; }
-    .qr-img { width: 180px; height: 180px; border: 2px solid #ddd; border-radius: 10px; }
-    .vip-btn { display: block; width: 100%; padding: 14px; background: #e74c3c; color: white; border: none; border-radius: 10px; font-size: 16px; cursor: pointer; margin-bottom: 10px; }
-    .vip-close { background: #95a5a6; }
+    .vip-price { font-size: 32px; color: #e74c3c; margin-bottom: 15px; font-weight: bold; }
+    .qr-section { margin: 15px 0; }
+    .qr-title { font-size: 14px; color: #333; margin-bottom: 8px; font-weight: bold; }
+    .qr-img { width: 160px; height: 160px; border-radius: 10px; }
+    .vip-btn { display: block; width: 100%; padding: 12px; background: #e74c3c; color: white; border: none; border-radius: 10px; font-size: 14px; cursor: pointer; margin-top: 15px; }
+    .vip-close { background: #95a5a6; margin-top: 10px; }
     .history-btn { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: #667eea; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; box-shadow: 0 4px 15px rgba(102,126,234,0.4); cursor: pointer; }
     .history-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; }
     .history-modal.show { display: block; }
     .history-content { background: white; padding: 20px; max-height: 80vh; overflow-y: auto; border-radius: 20px; margin: 20px; }
-    .history-item { padding: 10px; border-bottom: 1px solid #eee; }
+    .history-item { padding: 10px; border-bottom: 1px solid #eee; font-size: 12px; }
   </style>
 </head>
 <body>
@@ -50,7 +48,7 @@
     <h1>📄 PDF 转图片 VIP</h1>
     
     <div class="vip-banner" onclick="showVip()">
-      🌟 点击开通 VIP - 解锁全部功能
+      🌟 点击开通 VIP - ¥9.9/月
     </div>
     
     <div class="settings">
@@ -71,7 +69,7 @@
       </div>
       <div class="setting-row">
         <span class="setting-label">页面范围</span>
-        <input type="text" id="pageRange" placeholder="如: 1-5 或 1,3,5" style="width: 120px;">
+        <input type="text" id="pageRange" placeholder="如: 1-5" style="width: 100px;">
       </div>
     </div>
     
@@ -90,22 +88,21 @@
   <div class="vip-modal" id="vipModal" onclick="closeVip()">
     <div class="vip-content" onclick="event.stopPropagation()">
       <div class="vip-title">👑 VIP 特权</div>
-      <p>✅ 批量下载打包<br>✅ 高清画质<br>✅ 无限制转换<br>✅ 专属客服</p>
+      <p style="font-size:13px;color:#666;">✅ 批量下载打包<br>✅ 高清画质<br>✅ 无广告</p>
       <div class="vip-price">¥9.9/月</div>
       
       <div class="qr-section">
         <div class="qr-title">📱 微信支付</div>
-        <!-- 这里放你的微信收款码图片链接 -->
-        <img src="https://via.placeholder.com/180x180/07c160/ffffff?text=微信付款码" class="qr-img" alt="微信支付码">
+        <img src="https://raw.githubusercontent.com/renfei15238568276-ship-it/pdf2img-images/main/wechat.jpg" class="qr-img" alt="微信支付码">
       </div>
       
       <div class="qr-section">
         <div class="qr-title">💰 支付宝</div>
-        <!-- 这里放你的支付宝收款码图片链接 -->
-        <img src="https://via.placeholder.com/180x180/1677ff/ffffff?text=支付宝付款码" class="qr-img" alt="支付宝支付码">
+        <img src="https://raw.githubusercontent.com/renfei15238568276-ship-it/pdf2img-images/main/alipay.jpg" class="qr-img" alt="支付宝支付码">
       </div>
       
-      <p style="font-size:12px;color:#666;margin:15px 0;">* 付款后联系客服开通 VIP</p>
+      <p style="font-size:12px;color:#999;margin:10px 0;">付款后截图发给客服开通</p>
+      <button class="vip-btn" onclick="alert('请添加客服微信: renfei888')">💬 联系客服</button>
       <button class="vip-btn vip-close" onclick="closeVip()">关闭</button>
     </div>
   </div>
@@ -113,26 +110,26 @@
   <!-- 历史记录弹窗 -->
   <div class="history-modal" id="historyModal" onclick="closeHistory()">
     <div class="history-content" onclick="event.stopPropagation()">
-      <h2>📜 转换历史</h2>
+      <h3>📜 转换历史</h3>
       <div id="historyList"></div>
-      <button onclick="closeHistory()" style="margin-top:15px;padding:10px;width:100%;">关闭</button>
+      <button onclick="closeHistory()" style="margin-top:15px;padding:10px;width:100%;background:#667eea;color:white;border:none;border-radius:8px;">关闭</button>
     </div>
   </div>
   
   <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     
-    let currentPdf = null;
     let currentFileName = '';
     let convertedImages = [];
+    let isVip = false;
     
     function showVip() { document.getElementById('vipModal').classList.add('show'); }
     function closeVip() { document.getElementById('vipModal').classList.remove('show'); }
     function showHistory() {
       const history = JSON.parse(localStorage.getItem('pdfHistory') || '[]');
       document.getElementById('historyList').innerHTML = history.length ? 
-        history.map((h,i) => `<div class="history-item">${h.name} - ${h.pages}页 - ${h.date}</div>`).join('') : 
-        '<p>暂无记录</p>';
+        history.map(h => `<div class="history-item">${h.name} - ${h.pages}页<br>${h.date}</div>`).join('') : 
+        '<p style="color:#999;">暂无记录</p>';
       document.getElementById('historyModal').classList.add('show');
     }
     function closeHistory() { document.getElementById('historyModal').classList.remove('show'); }
@@ -147,7 +144,6 @@
       
       const arrayBuffer = await file.arrayBuffer();
       const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
-      currentPdf = pdf;
       
       let pages = [];
       if (pageRange) {
@@ -188,20 +184,20 @@
       history.unshift({ name: file.name, pages: pages.length, date: new Date().toLocaleString() });
       localStorage.setItem('pdfHistory', JSON.stringify(history.slice(0, 20)));
       
-      let html = `<div class="preview-header"><span>✅ 转换完成 (${pages.length} 页)</span></div>`;
+      let html = `<div style="margin-bottom:15px;"><span>✅ 转换完成 (${pages.length} 页)</span></div>`;
       convertedImages.forEach((img, idx) => {
         html += `<div class="preview-item"><img src="${img.data}"></div>`;
       });
-      html += '<button class="download-all" onclick="downloadAll()">📦 批量下载 (VIP)</button>';
+      html += '<button class="download-all" onclick="downloadAll()">📦 批量下载 (VIP专享)</button>';
       preview.innerHTML = html;
     }
     
     async function downloadAll() {
-      alert('请先开通 VIP！点击顶部黄色横幅开通');
-      showVip();
-    }
-    
-    async function downloadSelected() {
+      if (!isVip) {
+        showVip();
+        return;
+      }
+      
       const format = document.getElementById('format').value;
       const zip = new JSZip();
       
