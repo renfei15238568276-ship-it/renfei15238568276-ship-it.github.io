@@ -106,7 +106,7 @@
         <img src="https://raw.githubusercontent.com/renfei15238568276-ship-it/pdf2img-images/main/alipay.jpg" class="qr-img" alt="支付宝支付码">
       </div>
       
-      <button class="vip-btn vip-btn-wechat" onclick="contactAdmin()">💬 联系客服确认开通</button>
+      <button class="vip-btn vip-btn-wechat" onclick="contactAdmin()">💬 联系微信客服确认开通</button>
       
       <div class="code-section">
         <div class="qr-title">或输入兑换码开通</div>
@@ -150,7 +150,7 @@
     }
     function contactAdmin() {
       const msg = '我已经付款，请给我兑换码';
-      window.location.href = 'https://t.me/gomining125?text=' + encodeURIComponent(msg);
+      window.location.href = 'https://weixin.qq.com?text=' + encodeURIComponent(msg);
     }
     function redeemCode() {
       const code = document.getElementById('vipCode').value.trim().toUpperCase();
